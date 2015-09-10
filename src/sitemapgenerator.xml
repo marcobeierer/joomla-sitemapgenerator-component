@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.3" method="upgrade">
+	<name>com_sitemapgenerator</name>
+	<creationDate>September 2015</creationDate>
+	<author>Marco Beierer</author>
+	<authorEmail>email@marcobeierer.com</authorEmail>
+	<authorUrl>https://www.marcobeierer.com</authorUrl>
+	<copyright>Copyright (c) 2015 Marco Beierer</copyright>
+	<license>GNU GPL v3 or later</license>
+	<version>1.0.0-beta.1</version>
+	<description>Sitemap Generator component for Joomla.</description>
+	<administration>
+		<menu>sitemapgenerator</menu>
+		<files folder="backend">
+			<folder>views</folder>
+			<filename>controller.php</filename>
+			<filename>sitemapgenerator.php</filename>
+		</files>
+
+		<languages folder="language/backend">
+			<language tag="en-GB">en-GB/en-GB.com_sitemapgenerator.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_sitemapgenerator.sys.ini</language>
+		</languages>
+	</administration>
+
+	<media folder="media" destination="com_sitemapgenerator">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+</extension>
