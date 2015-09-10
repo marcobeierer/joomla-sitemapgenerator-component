@@ -6,7 +6,10 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 	function display($tmpl = null) {
 
 		JToolbarHelper::title(JText::_('COM_SITEMAPGENERATOR'));
-		JToolbarHelper::preferences('com_sitemapgenerator');
+
+		if (JFactory::getUser()->authorise('core.admin', 'com_sitemapgenerator')) {
+			JToolbarHelper::preferences('com_sitemapgenerator');
+		}
 
 		$doc = JFactory::getDocument();
 		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/angular.min.js', 'text/javascript', true);
