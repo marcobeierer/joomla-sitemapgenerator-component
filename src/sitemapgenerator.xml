@@ -9,6 +9,7 @@
 	<license>GNU GPL v3 or later</license>
 	<version>1.0.0-beta.1</version>
 	<description>Sitemap Generator component for Joomla.</description>
+
 	<administration>
 		<menu>sitemapgenerator</menu>
 		<files folder="backend">

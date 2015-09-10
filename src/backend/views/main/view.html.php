@@ -1,5 +1,9 @@
 <?php
-defined('_JEXEC') or die;
+/*
+ * @copyright  Copyright (C) 2015 Marco Beierer. All rights reserved.
+ * @license    http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
+ */
+defined('_JEXEC') or die('Restricted access');
 
 class SitemapGeneratorViewMain extends JViewLegacy {
 
