@@ -2,9 +2,6 @@
 	<div ng-controller="SitemapController">
 		<div class="wrap">
 			<h2>Sitemap Generator</h2>
-			<div ng-show="limitReached" class="notice notice-error is-dismissible below-h2 ng-hide">
-				<p>The Sitemap Generator reached the URL limit and the generated sitemap probably isn't complete. You may buy a token for the <a href="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional">Sitemap Generator Professional</a> to crawl up to 50000 URLs and create a complete sitemap.</p>
-			</div>
 			<div class="card" id="sitemap-widget">
 				<h3>Generate a XML sitemap of your site</h3>
 				<div>
@@ -19,6 +16,9 @@
 							</span>
 						</div>
 					</form>
+					<div ng-show="limitReached" class="notice notice-error is-dismissible below-h2 ng-hide">
+						<p class="alert alert-danger">The Sitemap Generator reached the URL limit and the generated sitemap probably isn't complete. You may buy a token for the <a href="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional">Sitemap Generator Professional</a> to crawl up to 50000 URLs and create a complete sitemap.</p>
+					</div>
 					<p class="alert well-sm {{ messageClass }}">{{ message }} <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} pages already crawled.</span></p>
 				</div>
 			</div>

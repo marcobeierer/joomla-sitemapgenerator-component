@@ -1,6 +1,5 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
-//jimport('joomla.application.component.controller');
 
 class SitemapGeneratorController extends JControllerLegacy {
 
@@ -13,7 +12,6 @@ class SitemapGeneratorController extends JControllerLegacy {
 	function proxy() {
 
 		$baseurl = JURI::root();
-		$baseurl = 'https://www.marcobeierer.ch';
 		$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
 		$ch = curl_init();

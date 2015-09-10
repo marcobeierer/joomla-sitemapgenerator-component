@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset
+		name="sitemapgenerator"
+		label="COM_SITEMAPGENERATOR_CONFIG_LABEL"
+		description="COM_SITEMAPGENERATOR_CONFIG_DESC">
+		
+		<field
+			name="token"
+			type="textarea"
+			rows="25"
+			label="COM_SITEMAPGENERATOR_FIELD_TOKEN_LABEL"
+			description="COM_SITEMAPGENERATOR_FIELD_TOKEN_DESC"
+			default="">
+		</field>
+	</fieldset>
+</config>
