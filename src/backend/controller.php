@@ -48,6 +48,12 @@ class SitemapGeneratorController extends JControllerLegacy {
 				header("X-Limit-Reached: $matches[1]");
 			}
 
+			$matches = array();
+			preg_match('/\r\nX-Stats: (.*)\r\n/', $responseHeader, $matches);
+			if (isset($matches[1])) {
+				header("X-Stats: $matches[1]");
+			}
+
 			$reader = new XMLReader();
 			$reader->xml($responseBody, 'UTF-8');
 			$reader->setParserProperty(XMLReader::VALIDATE, true);
@@ -59,6 +65,10 @@ class SitemapGeneratorController extends JControllerLegacy {
 					file_put_contents($rootPath . DIRECTORY_SEPARATOR . 'sitemap.xml', $responseBody); // TODO handle and report error
 				}
 			}
+		}
+
+		if ($statusCode == 0) {
+			$statusCode = 503; // service unavailable
 		}
 
 		if (function_exists('http_response_code')) {
