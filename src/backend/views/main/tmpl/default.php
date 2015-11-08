@@ -36,17 +36,50 @@ defined('_JEXEC') or die('Restricted access');
 								<i class="glyphicon glyphicon-globe"></i>
 							</span>
 							<span class="input-group-btn">
-								<button type="submit" class="button btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
-								<a class="button btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
+								<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
+								<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
 							</span>
 						</div>
 					</form>
-					<div ng-show="limitReached" class="notice notice-error is-dismissible below-h2 ng-hide">
-						<p class="alert alert-danger">The Sitemap Generator reached the URL limit and the generated sitemap probably isn't complete. You may buy a token for the <a href="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional">Sitemap Generator Professional</a> to crawl up to 50000 URLs and create a complete sitemap.</p>
-					</div>
-					<p class="alert well-sm {{ messageClass }}">{{ message }} <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} pages already crawled.</span></p>
+					<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} pages already crawled.</span></p>
 				</div>
 			</div>
+
+			<div class="card" ng-if="stats">
+				<h4>Crawl Stats</h4>
+				<table>
+					<tr>
+						<td>Crawled resources count:</td>
+						<td>{{ stats.CrawledResourcesCount }}</td>
+					</tr>
+					<tr>
+						<td>Dead resources count:</td>
+						<td>{{ stats.DeadResourcesCount }}</td>
+					</tr>
+					<tr>
+						<td>Timed out resources count:</td>
+						<td>{{ stats.TimedOutResourcesCount }}</td>
+					</tr>
+				</table>
+				<h4>Sitemap Stats</h4>
+				<table>
+					<tr>
+						<td>Sitemap URL count:</td>
+						<td>{{ stats.SitemapURLCount }}</td>
+					</tr>
+					<?php if ($this->hasToken): ?>
+					<tr>
+						<td>Sitemap image count:</td>
+						<td>{{ stats.SitemapImageCount }}</td>
+					</tr>
+					<tr>
+						<td>Sitemap video count:</td>
+						<td>{{ stats.SitemapVideoCount }}</td>
+					</tr>
+					<?php endif; ?>
+				</table>
+			</div>
+
 			<div class="card">
 				<h4>Sitemap Generator Professional</h4>
 				<p>Your site has <strong>more than 500 URLs</strong> or you like to integrate an <strong>image sitemap</strong> or a <strong>video sitemap</strong>? Then have a look at the <a href="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional">Sitemap Generator Professional</a>.

@@ -19,12 +19,14 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/angular.min.js', 'text/javascript', true);
 		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap.js?v=1', 'text/javascript', true);
 
-		$curlInstalled = function_exists('curl_version');
+		$this->curlInstalled = function_exists('curl_version');
 
 		$curlVersion = curl_version(); // temp var necessary for PHP 5.3
-		$curlVersionOk = version_compare($curlVersion['version'], '7.18.1', '<');
+		$this->curlVersionOk = version_compare($curlVersion['version'], '7.18.1', '<');
 
-		$onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1;
+		$this->onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1;
+
+		$this->hasToken = JComponentHelper::getParams('com_sitemapgenerator')->get('token') != '';
 
 		parent::display();
 	}
