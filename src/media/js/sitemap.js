@@ -1,8 +1,7 @@
 'use strict';
 
 var sitemapGeneratorApp = angular.module('sitemapGeneratorApp', []);
-var blob;
-var language = jQuery('html').attr('lang');
+var sitemapGeneratorBlob;
 
 sitemapGeneratorApp.config(['$compileProvider',
 	function($compileProvider) {
@@ -15,17 +14,12 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 
 		$scope.downloadDisabled = true;
 		$scope.generateDisabled = false;
-		$scope.limitReached = false;
 
-		if (language == 'de' || language == 'de-DE') {
-			$scope.message = "Die Generierung der Sitemap wurde noch nicht gestartet.";
-		} else {
-			$scope.message = "The generation of the sitemap was not started yet.";
-		}
-
+		$scope.message = "The generation of the sitemap was not started yet.";
 		$scope.messageClass = "alert-info";
-		$scope.generateClass = "button-primary btn-primary";
-		$scope.downloadClass = "button-default btn-default";
+
+		$scope.generateClass = sitemapGeneratorVars.btnPrimaryClass;
+		$scope.downloadClass = sitemapGeneratorVars.btnDefaultClass;
 
 		$scope.generate = function() {
 
@@ -34,43 +28,44 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 				$scope.downloadDisabled = true;
 				$scope.generateDisabled = true;
 				$scope.pageCount = 0;
-				$scope.limitReached = false;
+				$scope.stats = null;
 
-				if (language == 'de' || language == 'de-DE') {
-					$scope.message = "Die Sitemap wird generiert. Bitte haben Sie einen Moment Geduld.";
-				} else {
-					$scope.message = "The sitemap is being generated. Please wait a moment.";
-				}
+				$scope.message = "The sitemap is being generated. Please wait a moment.";
 				$scope.messageClass = "alert-warning";
-				$scope.generateClass = "button-primary btn-primary";
-				$scope.downloadClass = "button-default btn-default";
+
+				$scope.generateClass = sitemapGeneratorVars.btnPrimaryClass;
+				$scope.downloadClass = sitemapGeneratorVars.btnDefaultClass;
 				
 				var poller = function() {
 
-					$http.get('index.php?option=com_sitemapgenerator&task=proxy&format=raw').
+					$http.get(sitemapGeneratorVars.proxyURL).
 						success(function(data, status, headers, config) {
 
 							if (headers('Content-Type') == 'application/xml') {
 
-								if (headers('X-Limit-Reached') == 1) {
-									$scope.limitReached = true;
-								}
-
-								blob = new Blob([ data ], { type : 'application/xml' });
-								$scope.href = (window.URL || window.webkitURL).createObjectURL( blob );
+								sitemapGeneratorBlob = new Blob([ data ], { type : 'application/xml' });
+								$scope.href = (window.URL || window.webkitURL).createObjectURL(sitemapGeneratorBlob);
 
 								$scope.downloadDisabled = false;
 								$scope.generateDisabled = false;
 
-								if (language == 'de' || language == 'de-DE') {
-									$scope.message = "Ihre Sitemap wurde erfolgreich erstellt und im Joomla-Hauptverzeichnis gespeichert.";
-								} else {
-									$scope.message = "The generation of the sitemap was successfull. The sitemap was saved as sitemap.xml in the Joomla root folder.";
+								if (headers('X-Limit-Reached') == 1) {
+
+									$scope.message = "The Sitemap Generator reached the URL limit and the generated sitemap probably isn't complete. You may buy a token for the <a href=\"" + sitemapGeneratorVars.professionalURL + "\">Sitemap Generator Professional</a> to crawl up to 50'000 URLs and create a complete sitemap. Additionally to a higher URL limit, the professional version also adds images and videos to your sitemap.";
+
+									$scope.messageClass = "alert-danger";
+								}
+								else {
+									$scope.message = "The generation of the sitemap was successful. The sitemap was saved as sitemap.xml in the " + sitemapGeneratorVars.systemName + " root folder. Please see the stats below.";
+									$scope.messageClass = "alert-success";
 								}
 
-								$scope.messageClass = "alert-success";
-								$scope.generateClass = "button-default btn-default";
-								$scope.downloadClass = "button-primary btn-primary";
+								if (headers('X-Stats') != null) {
+									$scope.stats = JSON.parse(headers('X-Stats'));
+								}
+
+								$scope.generateClass = sitemapGeneratorVars.btnDefaultClass;
+								$scope.downloadClass = sitemapGeneratorVars.btnPrimaryClass;
 							}
 							else {
 								$scope.pageCount = data.page_count;
@@ -79,18 +74,16 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 						}).
 						error(function(data, status, headers, config) {
 
-							// TODO handle status 401 unauthorized
-
 							$scope.generateDisabled = false;
 
-							if (status == 401) {
-								$scope.message = "Im Hauptverzeichnis Ihrer Website wurde die Datei allow-sitemap-generator.html nicht gefunden. Bitte legen Sie diese an und probieren es erneut."; // TODO remove this message
+							if (status == 401) { // unauthorized
+								$scope.message = "The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.";
+							} else if (status == 500) {
+								$scope.message = "The creation of your sitemap failed with the error:<br/><strong>" + JSON.parse(data) + "</strong>.";
+							} else if (status == 503) {
+								$scope.message = "The backend server is currently unavailable. Please try it again later.";
 							} else {
-								if (language == 'de' || language == 'de-DE') {
-									$scope.message = "Ihre Sitemap konnte leider nicht erstellt werden. Bitte probieren Sie es erneut.";
-								} else {
-									$scope.message = "The creation of your sitemap failed. Please try it again.";
-								}
+								$scope.message = "The creation of your sitemap failed. Please try it again.";
 							}
 							$scope.messageClass = "alert-danger";
 						});
@@ -100,9 +93,15 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 		}
 
 		$scope.download = function() {
-			if (window.navigator.msSaveOrOpenBlob && blob) { 
-				window.navigator.msSaveOrOpenBlob(blob, 'sitemap.xml');
+			if (window.navigator.msSaveOrOpenBlob && sitemapGeneratorBlob) { 
+				window.navigator.msSaveOrOpenBlob(sitemapGeneratorBlob, 'sitemap.xml');
 			}
 		}
 	}
 ]);
+
+sitemapGeneratorApp.filter("sanitize", ['$sce', function($sce) {
+	return function(htmlCode){
+		return $sce.trustAsHtml(htmlCode);
+	}
+}]);
