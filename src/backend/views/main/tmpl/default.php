@@ -13,17 +13,17 @@ defined('_JEXEC') or die('Restricted access');
 
 			<?php if (!$this->curlInstalled): ?>
 				<div class="alert alert-error">
-					<p>cURL is not activated on your webspace. Please activate it in your web hosting control panel. This plugin will not work without cURL activated.</p>
+					cURL is not activated on your webspace. Please activate it in your web hosting control panel. This plugin will not work without cURL activated.
 				</div>
-			<?php else if (!$this->curlVersionOk): ?>
+			<?php elseif (!$this->curlVersionOk): ?>
 				<div class="alert alert-error">
-					<p>You have an outdated version of cURL installed. Please update to cURL 7.18.1 or higher in your web hosting control panel. A compatible version should be provided by default with PHP 5.4 or higher. This plugin will not work with the currently installed cURL version.</p>
+					You have an outdated version of cURL installed. Please update to cURL 7.18.1 or higher in your web hosting control panel. A compatible version should be provided by default with PHP 5.4 or higher. This plugin will not work with the currently installed cURL version.
 				</div>
 			<?php endif; ?>
 
 			<?php if ($this->onLocalhost): ?>
 				<div class="alert alert-error">
-					<p>It is not possible to use this plugin in a local development environment. The backend service needs to crawl your website and this is just possible if your site is reachable from the internet.</p>
+					It is not possible to use this plugin in a local development environment. The backend service needs to crawl your website and this is just possible if your site is reachable from the internet.
 				</div>
 			<?php endif; ?>
 
