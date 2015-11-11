@@ -41,26 +41,11 @@ defined('_JEXEC') or die('Restricted access');
 							</span>
 						</div>
 					</form>
-					<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} pages already crawled.</span></p>
+					<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
 				</div>
 			</div>
 
 			<div class="card" ng-if="stats">
-				<h4>Crawl Stats</h4>
-				<table>
-					<tr>
-						<td>Crawled resources count:</td>
-						<td>{{ stats.CrawledResourcesCount }}</td>
-					</tr>
-					<tr>
-						<td>Dead resources count:</td>
-						<td>{{ stats.DeadResourcesCount }}</td>
-					</tr>
-					<tr>
-						<td>Timed out resources count:</td>
-						<td>{{ stats.TimedOutResourcesCount }}</td>
-					</tr>
-				</table>
 				<h4>Sitemap Stats</h4>
 				<table>
 					<tr>
@@ -77,6 +62,21 @@ defined('_JEXEC') or die('Restricted access');
 						<td>{{ stats.SitemapVideoCount }}</td>
 					</tr>
 					<?php endif; ?>
+				</table>
+				<h4>Crawl Stats</h4>
+				<table>
+					<tr>
+						<td>Crawled URLs count:</td>
+						<td>{{ stats.CrawledResourcesCount }}</td>
+					</tr>
+					<tr>
+						<td>Dead URLs count:</td>
+						<td>{{ stats.DeadResourcesCount }}</td>
+					</tr>
+					<tr>
+						<td>Timed out URLs count:</td>
+						<td>{{ stats.TimedOutResourcesCount }}</td>
+					</tr>
 				</table>
 			</div>
 
