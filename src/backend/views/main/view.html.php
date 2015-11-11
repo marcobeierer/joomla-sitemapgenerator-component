@@ -25,7 +25,7 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$curlVersion = curl_version(); // temp var necessary for PHP 5.3
 		$this->curlVersionOk = version_compare($curlVersion['version'], '7.18.1', '>=');
 
-		$this->onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1;
+		$this->onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1; // TODO improve localhost detection
 
 		$this->hasToken = JComponentHelper::getParams('com_sitemapgenerator')->get('token') != '';
 
