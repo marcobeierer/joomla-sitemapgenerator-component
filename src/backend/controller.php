@@ -31,12 +31,25 @@ class SitemapGeneratorController extends JControllerLegacy {
 
 		$response = curl_exec($ch);
 
-		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$responseHeader = substr($response, 0, $headerSize);
-		$responseBody = substr($response, $headerSize);
+		if ($response === false) {
+			$errorMessage = curl_error($ch);
 
-		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+			$responseHeader = '';
+			$responseBody = json_encode($errorMessage);
+
+			$contentType = 'application/json';
+			$statusCode = 504; // gateway timeout
+
+			header('X-CURL-Error: 1');
+		} else {
+			$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+
+			$responseHeader = substr($response, 0, $headerSize);
+			$responseBody = substr($response, $headerSize);
+
+			$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+			$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		}
 
 		curl_close($ch);
 
@@ -65,10 +78,6 @@ class SitemapGeneratorController extends JControllerLegacy {
 					file_put_contents($rootPath . DIRECTORY_SEPARATOR . 'sitemap.xml', $responseBody); // TODO handle and report error
 				}
 			}
-		}
-
-		if ($statusCode == 0) {
-			$statusCode = 503; // service unavailable
 		}
 
 		if (function_exists('http_response_code')) {
