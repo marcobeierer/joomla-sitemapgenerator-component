@@ -14,6 +14,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 	}
 
 	function proxy() {
+		$params = JComponentHelper::getParams('com_sitemapgenerator');
 
 		$baseurl = JURI::root();
 		$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
@@ -23,8 +24,12 @@ class SitemapGeneratorController extends JControllerLegacy {
 		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $baseurl64 . '?pdfs=1&origin_system=joomla');
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
+		if ($params->get('ca_fallback', 0) === '1') {
+			curl_setopt($ch, CURLOPT_CAINFO, JPATH_ROOT . '/media/com_sitemapgenerator/ca-bundle.crt');
+		}
 
-		$token = JComponentHelper::getParams('com_sitemapgenerator')->get('token');
+		$token = $params->get('token');
 		if ($token != '') {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: BEARER ' . $token));
 		}

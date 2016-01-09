@@ -28,5 +28,6 @@
 
 	<media folder="media" destination="com_sitemapgenerator">
 		<folder>js</folder>
+		<file>ca-bundle.crt</file>
 	</media>
 </extension>

@@ -14,6 +14,16 @@
 			default="">
 		</field>
 
+		<field
+			name="ca_fallback"
+			type="list"
+			label="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_LABEL"
+			description="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_DESC"
+			default="">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
 	</fieldset>
 
 	<fieldset
