@@ -8,7 +8,6 @@ defined('_JEXEC') or die('Restricted access');
 class SitemapGeneratorController extends JControllerLegacy {
 
 	function display($cacheable = false, $urlparams = array()) {
-
 		$this->input->set('view', 'main');
 		parent::display($cacheable, $urlparams);
 	}

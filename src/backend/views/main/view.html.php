@@ -6,9 +6,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 class SitemapGeneratorViewMain extends JViewLegacy {
-
 	function display($tmpl = null) {
-
 		JToolbarHelper::title(JText::_('COM_SITEMAPGENERATOR'));
 
 		if (JFactory::getUser()->authorise('core.admin', 'com_sitemapgenerator')) {
@@ -26,9 +24,65 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$this->curlVersionOk = version_compare($curlVersion['version'], '7.18.1', '>=');
 
 		$this->onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1; // TODO improve localhost detection
+		
+		$params = JComponentHelper::getParams('com_sitemapgenerator');
 
-		$this->hasToken = JComponentHelper::getParams('com_sitemapgenerator')->get('token') != '';
+		$this->hasToken = $params->get('token') != '';
+		$this->multilangSupportEnabled = $params->get('multilang_support') == '1';
+
+		if ($this->multilangSupportEnabled) {
+			$this->sitemapsData = $this->loadSitemapsData();
+		}
 
 		parent::display();
+	}
+
+	function loadSitemapsData() {
+		$languages = JLanguageHelper::getLanguages();
+		$app = JApplication::getInstance('site');
+		$menu = $app->getMenu();
+		$config = JFactory::getConfig();
+
+		$sef = $config->get('sef', 0);
+		$sefRewrite = $config->get('sef_rewrite', 0);
+
+		$defaultLangCode = JFactory::getLanguage()->getDefault();
+
+		$sitemaps = array();
+		//$sitemaps['*'] = $menu->getDefault('*'); // TODO add?
+
+		$languageFilterEnabled = JPluginHelper::isEnabled('system', 'languagefilter');
+		if (!$languageFilterEnabled || $sef != '1') { // TODO check also if sef is enabled
+			return $sitemaps;
+		}
+
+		$oldLanguageFilterValue = $app->setLanguageFilter(true); // necessary that $menu->getDefault() works
+
+		foreach ($languages as $language) {
+			$langCode = $language->lang_code;
+			$default = $menu->getDefault($langCode);
+
+			if ($default && $default->language == $langCode) {
+				$sitemap = new stdClass();
+
+				$sitemap->link = JURI::root() . 'index.php/' . $language->sef . '/';
+				if ($sefRewrite) {
+					$sitemap->link = JURI::root() . $language->sef . '/';
+				}
+				$sitemap->default = $langCode == $defaultLangCode;
+				$sitemap->identifier = $language->sef;
+
+				$sitemap->filename = 'sitemap.xml';
+				if (!$sitemap->default) {
+					$sitemap->filename = 'sitemap.' . $language->sef . '.xml';
+				}
+
+				$sitemaps[$langCode] = $sitemap;
+			}
+		}
+
+		$app->setLanguageFilter($oldLanguageFilterValue);
+
+		return $sitemaps;
 	}
 }

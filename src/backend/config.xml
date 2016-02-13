@@ -15,16 +15,6 @@
 		</field>
 
 		<field
-			name="ca_fallback"
-			type="list"
-			label="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_LABEL"
-			description="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_DESC"
-			default="0">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-
-		<field
 			name="multilang_support"
 			type="list"
 			label="COM_SITEMAPGENERATOR_FIELD_MULTILANG_SUPPORT_LABEL"
@@ -34,6 +24,15 @@
 			<option value="1">JYES</option>
 		</field>
 
+		<field
+			name="ca_fallback"
+			type="list"
+			label="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_LABEL"
+			description="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_DESC"
+			default="0">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
 	</fieldset>
 
 	<fieldset

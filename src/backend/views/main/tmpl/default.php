@@ -28,21 +28,44 @@ defined('_JEXEC') or die('Restricted access');
 			<?php endif; ?>
 
 			<div class="card" id="sitemap-widget">
-				<h3>Generate a XML sitemap of your site</h3>
-				<div>
-					<form name="sitemapForm">
-						<div class="input-group">
-							<span class="input-group-addon">
-								<i class="glyphicon glyphicon-globe"></i>
-							</span>
-							<span class="input-group-btn">
-								<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
-								<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
-							</span>
+				<?php if ($this->multilangSupportEnabled): ?>
+					<h3>Generate XML sitemaps for your site</h3>
+					<hr />
+					<?php foreach($this->sitemapsData as $data): ?>
+						<div>
+							<p>Generate a sitemap for <strong><?php echo $data->link; ?></strong>. The sitemap will be saved with the filename <strong><?php echo $data->filename; ?></strong>.</p>
+							<form name="sitemapForm">
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="glyphicon glyphicon-globe"></i>
+									</span>
+									<span class="input-group-btn">
+										<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
+										<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
+									</span>
+								</div>
+							</form>
+							<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
 						</div>
-					</form>
-					<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
-				</div>
+						<hr />
+					<?php endforeach; ?>
+				<?php else: ?>
+					<h3>Generate a XML sitemap of your site</h3>
+					<div>
+						<form name="sitemapForm">
+							<div class="input-group">
+								<span class="input-group-addon">
+									<i class="glyphicon glyphicon-globe"></i>
+								</span>
+								<span class="input-group-btn">
+									<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
+									<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
+								</span>
+							</div>
+						</form>
+						<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
+					</div>
+				<?php endif; ?>
 			</div>
 
 			<div class="card" ng-if="stats">
