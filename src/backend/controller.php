@@ -58,7 +58,6 @@ class SitemapGeneratorController extends JControllerLegacy {
 		curl_close($ch);
 
 		if ($statusCode == 200 && $contentType == 'application/xml') {
-
 			$matches = array();
 			preg_match('/\r\nX-Limit-Reached: (.*)\r\n/', $responseHeader, $matches);
 			if (isset($matches[1])) {
