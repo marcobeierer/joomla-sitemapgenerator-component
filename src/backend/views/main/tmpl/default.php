@@ -27,6 +27,12 @@ defined('_JEXEC') or die('Restricted access');
 				</div>
 			<?php endif; ?>
 
+			<?php if ($this->isSEFMultilangSiteWithoutMultilangSupportEnabled): ?>
+				<div class="alert alert-error">
+					You are using the Sitemap Generator with a multilanguage site and have SEF urls enabled. The Sitemap Generator will by default only generate a sitemap for one language version of your site. To generate a sitemap for each language version of your site, you have to enable the multilanguage support in the component options.
+				</div>
+			<?php endif; ?>
+
 			<div class="card" id="sitemap-widget">
 				<?php if (count($this->sitemapsData) > 1): ?>
 					<h3>Generate XML sitemaps for your site</h3>

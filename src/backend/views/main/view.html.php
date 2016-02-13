@@ -38,6 +38,10 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 
 		$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
 
+		$languageFilterEnabled = JPluginHelper::isEnabled('system', 'languagefilter');
+		$sef = JFactory::getConfig()->get('sef', 0);
+		$this->isSEFMultilangSiteWithoutMultilangSupportEnabled = $languageFilterEnabled && $sef == '1' && !$this->multilangSupportEnabled;
+
 		parent::display();
 	}
 
