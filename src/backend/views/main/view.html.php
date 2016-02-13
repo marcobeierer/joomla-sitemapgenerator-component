@@ -32,9 +32,35 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 
 		if ($this->multilangSupportEnabled) {
 			$this->sitemapsData = $this->loadSitemapsData();
+		} else {
+			$this->sitemapsData = $this->loadDefaultSitemapData();
 		}
 
+		$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
+
 		parent::display();
+	}
+
+	function getAngularBootstrapJS($sitemapsData) {
+		$script = "jQuery(document).ready(function() {\n";
+		foreach ($sitemapsData as $data) {
+			$script .= "angular.bootstrap(document.getElementById('" . $data->identifier . "SitemapGenerator'), ['sitemapGeneratorApp']);\n";
+		}
+		$script .= "});";
+
+		return $script;
+	}
+
+	function loadDefaultSitemapData() {
+		$sitemaps = array();
+
+		$sitemap = new stdClass();
+		$sitemap->link = JURI::root();
+		$sitemap->identifier = '';
+		$sitemap->filename = 'sitemap.xml';
+
+		$sitemaps[] = $sitemap;
+		return $sitemaps;
 	}
 
 	function loadSitemapsData() {
@@ -69,11 +95,10 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 				if ($sefRewrite) {
 					$sitemap->link = JURI::root() . $language->sef . '/';
 				}
-				$sitemap->default = $langCode == $defaultLangCode;
 				$sitemap->identifier = $language->sef;
 
 				$sitemap->filename = 'sitemap.xml';
-				if (!$sitemap->default) {
+				if ($langCode != $defaultLangCode) {
 					$sitemap->filename = 'sitemap.' . $language->sef . '.xml';
 				}
 

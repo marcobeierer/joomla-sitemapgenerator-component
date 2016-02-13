@@ -6,8 +6,8 @@
 defined('_JEXEC') or die('Restricted access');
 ?>
 
-<div ng-app="sitemapGeneratorApp" ng-strict-di>
-	<div ng-controller="SitemapController">
+<div >
+	<div >
 		<div class="wrap">
 			<h2>Sitemap Generator</h2>
 
@@ -28,79 +28,69 @@ defined('_JEXEC') or die('Restricted access');
 			<?php endif; ?>
 
 			<div class="card" id="sitemap-widget">
-				<?php if ($this->multilangSupportEnabled): ?>
+				<?php if (count($this->sitemapsData) > 1): ?>
 					<h3>Generate XML sitemaps for your site</h3>
-					<hr />
-					<?php foreach($this->sitemapsData as $data): ?>
-						<div>
-							<p>Generate a sitemap for <strong><?php echo $data->link; ?></strong>. The sitemap will be saved with the filename <strong><?php echo $data->filename; ?></strong>.</p>
-							<form name="sitemapForm">
-								<div class="input-group">
-									<span class="input-group-addon">
-										<i class="glyphicon glyphicon-globe"></i>
-									</span>
-									<span class="input-group-btn">
-										<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
-										<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
-									</span>
-								</div>
-							</form>
-							<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
-						</div>
-						<hr />
-					<?php endforeach; ?>
 				<?php else: ?>
-					<h3>Generate a XML sitemap of your site</h3>
-					<div>
-						<form name="sitemapForm">
-							<div class="input-group">
-								<span class="input-group-addon">
-									<i class="glyphicon glyphicon-globe"></i>
-								</span>
-								<span class="input-group-btn">
-									<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
-									<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
-								</span>
-							</div>
-						</form>
-						<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
-					</div>
+					<h3>Generate a XML sitemap for your site</h3>
 				<?php endif; ?>
-			</div>
+				<hr />
+				<?php foreach($this->sitemapsData as $data): ?>
+					<div id="<?php echo $data->identifier; ?>SitemapGenerator">
+						<div ng-controller="SitemapController">
+							<div>
+								<p>Generate a sitemap for <strong><?php echo $data->link; ?></strong>. The sitemap will be saved with the filename <strong><?php echo $data->filename; ?></strong> in the root directory of your Joomla installation. Any existing file with the same filename will get overwritten.</p>
+								<form name="sitemapForm">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="glyphicon glyphicon-globe"></i>
+										</span>
+										<span class="input-group-btn">
+											<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
+											<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
+										</span>
+									</div>
+								</form>
+								<p class="alert well-sm {{ messageClass }}"><span ng-bind-html="message | sanitize"></span> <span ng-if="pageCount > 0 && downloadDisabled">{{ pageCount }} URLs already processed.</span></p>
+							</div>
 
-			<div class="card" ng-if="stats">
-				<h4>Sitemap Stats</h4>
-				<table>
-					<tr>
-						<td>Sitemap URL count:</td>
-						<td>{{ stats.SitemapURLCount }}</td>
-					</tr>
-					<?php if ($this->hasToken): ?>
-					<tr>
-						<td>Sitemap image count:</td>
-						<td>{{ stats.SitemapImageCount }}</td>
-					</tr>
-					<tr>
-						<td>Sitemap video count:</td>
-						<td>{{ stats.SitemapVideoCount }}</td>
-					</tr>
-					<?php endif; ?>
-				</table>
-				<h4>Crawl Stats</h4>
-				<table>
-					<tr>
-						<td>Crawled URLs count:</td>
-						<td>{{ stats.CrawledResourcesCount }}</td>
-					</tr>
-					<tr>
-						<td>Dead URLs count:</td>
-						<td>{{ stats.DeadResourcesCount }}</td>
-					</tr>
-					<tr>
-						<td>Timed out URLs count:</td>
-						<td>{{ stats.TimedOutResourcesCount }}</td>
-					</tr>
-				</table>
+							<div class="card" ng-if="stats">
+								<h4>Sitemap Stats</h4>
+								<table>
+									<tr>
+										<td>Sitemap URL count:</td>
+										<td>{{ stats.SitemapURLCount }}</td>
+									</tr>
+									<?php if ($this->hasToken): ?>
+									<tr>
+										<td>Sitemap image count:</td>
+										<td>{{ stats.SitemapImageCount }}</td>
+									</tr>
+									<tr>
+										<td>Sitemap video count:</td>
+										<td>{{ stats.SitemapVideoCount }}</td>
+									</tr>
+									<?php endif; ?>
+								</table>
+								<h4>Crawl Stats</h4>
+								<table>
+									<tr>
+										<td>Crawled URLs count:</td>
+										<td>{{ stats.CrawledResourcesCount }}</td>
+									</tr>
+									<tr>
+										<td>Dead URLs count:</td>
+										<td>{{ stats.DeadResourcesCount }}</td>
+									</tr>
+									<tr>
+										<td>Timed out URLs count:</td>
+										<td>{{ stats.TimedOutResourcesCount }}</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+					<hr />
+				<?php endforeach; ?>
 			</div>
 
 			<div class="card">
