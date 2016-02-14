@@ -26,11 +26,24 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$this->onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1; // TODO improve localhost detection
 		
 		$params = JComponentHelper::getParams('com_sitemapgenerator');
+		$sef = JFactory::getConfig()->get('sef', 0);
+
+		$languageFilterEnabled = JPluginHelper::isEnabled('system', 'languagefilter');
+		if ($languageFilterEnabled) {
+			$languageFilterPlugin = JPluginHelper::getPlugin('system', 'languagefilter');
+			$languageFilterParams = new JRegistry($languageFilterPlugin->params);
+			$removeDefaultPrefix = $languageFilterParams->get('remove_default_prefix', 0) == '1';
+		} else {
+			$removeDefaultPrefix = false;
+		}
 
 		$this->hasToken = $params->get('token') != '';
-		$this->multilangSupportEnabled = $params->get('multilang_support') == '1';
 
-		if ($this->multilangSupportEnabled) {
+		$this->multilangSupportEnabled = $params->get('multilang_support') == '1';
+		$this->multilangSupportNecessary = $languageFilterEnabled && $sef == '1' && !$removeDefaultPrefix;
+		$this->isSEFMultilangSiteWithoutMultilangSupportEnabled = $this->multilangSupportNecessary && !$this->multilangSupportEnabled;
+
+		if ($this->multilangSupportEnabled && $this->multilangSupportNecessary) {
 			$this->sitemapsData = $this->loadSitemapsData();
 		} else {
 			$this->sitemapsData = $this->loadDefaultSitemapData();
@@ -41,11 +54,6 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		}
 
 		$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
-
-		$languageFilterEnabled = JPluginHelper::isEnabled('system', 'languagefilter');
-		$sef = JFactory::getConfig()->get('sef', 0);
-
-		$this->isSEFMultilangSiteWithoutMultilangSupportEnabled = $languageFilterEnabled && $sef == '1' && !$this->multilangSupportEnabled;
 
 		parent::display();
 	}
@@ -111,10 +119,12 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 				}
 
 				$sitemap->base64URL = $this->base64URL($sitemap->link);
-				$sitemap->identifier = substr($language->sef, 0, 3);
 
+				$sitemap->identifier = '';
 				$sitemap->filename = 'sitemap.xml';
+
 				if ($langCode != $defaultLangCode) {
+					$sitemap->identifier = substr($language->sef, 0, 3);
 					$sitemap->filename = 'sitemap.' . $language->sef . '.xml';
 				}
 
