@@ -111,7 +111,7 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 				}
 
 				$sitemap->base64URL = $this->base64URL($sitemap->link);
-				$sitemap->identifier = $language->sef;
+				$sitemap->identifier = substr($language->sef, 0, 3);
 
 				$sitemap->filename = 'sitemap.xml';
 				if ($langCode != $defaultLangCode) {

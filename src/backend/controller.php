@@ -20,7 +20,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 		$base64URL = urldecode($input->getString('base64url', '')); // string filter necessary that percent encoded = is not stripped
 		$identifier = $input->getWord('identifier', '');
 
-		if (strlen($identifier) > 3) {
+		if (strlen($identifier) > 3) { // prevent security issues with tampered identifiers
 			$this->setStatusCode(400); // bad request
 			JFactory::getApplication()->close();
 			return;
