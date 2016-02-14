@@ -21,7 +21,7 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 		$scope.generateClass = sitemapGeneratorVars.btnPrimaryClass;
 		$scope.downloadClass = sitemapGeneratorVars.btnDefaultClass;
 
-		$scope.generate = function() {
+		$scope.generate = function(base64URL, identifier) {
 
 			if ($scope.sitemapForm.$valid) {
 
@@ -37,8 +37,12 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 				$scope.downloadClass = sitemapGeneratorVars.btnDefaultClass;
 				
 				var poller = function() {
+					var proxyURL = sitemapGeneratorVars.proxyURL;
+					if (sitemapGeneratorVars.systemName == 'Joomla') {
+						proxyURL += '&base64url=' + base64URL + '&identifier=' + identifier;
+					}
 
-					$http.get(sitemapGeneratorVars.proxyURL).
+					$http.get(proxyURL).
 						success(function(data, status, headers, config) {
 
 							if (headers('Content-Type') == 'application/xml') {

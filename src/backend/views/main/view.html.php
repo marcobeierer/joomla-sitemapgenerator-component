@@ -60,11 +60,16 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 
 		$sitemap = new stdClass();
 		$sitemap->link = JURI::root();
+		$sitemap->base64URL = $this->base64URL($sitemap->link);
 		$sitemap->identifier = '';
 		$sitemap->filename = 'sitemap.xml';
 
 		$sitemaps[] = $sitemap;
 		return $sitemaps;
+	}
+
+	function base64URL($url) {
+		return urlencode(strtr(base64_encode($url), '+/', '-_')); // urlencode for =
 	}
 
 	function loadSitemapsData() {
@@ -99,6 +104,8 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 				if ($sefRewrite) {
 					$sitemap->link = JURI::root() . $language->sef . '/';
 				}
+
+				$sitemap->base64URL = $this->base64URL($sitemap->link);
 				$sitemap->identifier = $language->sef;
 
 				$sitemap->filename = 'sitemap.xml';

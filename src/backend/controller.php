@@ -15,12 +15,20 @@ class SitemapGeneratorController extends JControllerLegacy {
 	function proxy() {
 		$params = JComponentHelper::getParams('com_sitemapgenerator');
 
-		$baseurl = JURI::root();
-		$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
+		$input = JFactory::getApplication()->input;
+
+		$base64URL = urldecode($input->getString('base64url', '')); // string filter necessary that percent encoded = is not stripped
+		$identifier = $input->getWord('identifier', '');
+
+		if (strlen($identifier) > 3) {
+			$this->setStatusCode(400); // bad request
+			JFactory::getApplication()->close();
+			return;
+		}
 
 		$ch = curl_init();
 
-		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $baseurl64 . '?pdfs=1&origin_system=joomla');
+		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla');
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		
@@ -78,11 +86,24 @@ class SitemapGeneratorController extends JControllerLegacy {
 
 				$rootPath = JPATH_ROOT;
 				if ($rootPath != '') {
-					file_put_contents($rootPath . DIRECTORY_SEPARATOR . 'sitemap.xml', $responseBody); // TODO handle and report error
+					$filename = 'sitemap.xml';
+					if ($identifier != '') {
+						$filename = 'sitemap.' . $identifier . '.xml';
+					}
+					file_put_contents($rootPath . DIRECTORY_SEPARATOR . $filename, $responseBody); // TODO handle and report error
 				}
 			}
 		}
 
+		$this->setStatusCode($statusCode);
+
+		header("Content-Type: $contentType");
+
+		echo $responseBody;
+		JFactory::getApplication()->close();
+	}
+
+	function setStatusCode($statusCode) {
 		if (function_exists('http_response_code')) {
 			http_response_code($statusCode);
 		}
@@ -90,10 +111,5 @@ class SitemapGeneratorController extends JControllerLegacy {
 			$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 			header($protocol . ' ' . $statusCode . ' ');
 		}
-
-		header("Content-Type: $contentType");
-
-		echo $responseBody;
-		JFactory::getApplication()->close();
 	}
 }

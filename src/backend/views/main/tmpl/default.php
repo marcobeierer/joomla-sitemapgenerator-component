@@ -51,7 +51,12 @@ defined('_JEXEC') or die('Restricted access');
 											<i class="glyphicon glyphicon-globe"></i>
 										</span>
 										<span class="input-group-btn">
-											<button type="submit" class="btn {{ generateClass }}" ng-click="generate()" ng-disabled="generateDisabled">Generate your sitemap</button>
+											<button 
+												type="submit" 
+												class="btn {{ generateClass }}" 
+												ng-click="generate('<?php echo $data->base64URL; ?>', '<?php echo $data->identifier; ?>')" 
+												ng-disabled="generateDisabled">Generate your sitemap
+											</button>
 											<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
 										</span>
 									</div>
