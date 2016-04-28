@@ -98,6 +98,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 		$this->setStatusCode($statusCode);
 
 		header("Content-Type: $contentType");
+		header('Cache-Control: no-store');
 
 		echo $responseBody;
 		JFactory::getApplication()->close();
