@@ -57,7 +57,7 @@ defined('_JEXEC') or die('Restricted access');
 												ng-click="generate('<?php echo $data->base64URL; ?>', '<?php echo $data->identifier; ?>')" 
 												ng-disabled="generateDisabled">Generate your sitemap
 											</button>
-											<a class="btn {{ downloadClass }}" ng-click="download()" ng-disabled="downloadDisabled" download="sitemap.xml" ng-href="{{ href }}">Show the sitemap</a>
+											<a class="btn {{ downloadClass }}" ng-href="<?php echo $data->link . $data->filename; ?>" ng-disabled="downloadDisabled">Show the sitemap</a>
 										</span>
 									</div>
 								</form>

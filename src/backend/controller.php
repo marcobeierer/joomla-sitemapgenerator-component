@@ -93,6 +93,8 @@ class SitemapGeneratorController extends JControllerLegacy {
 					file_put_contents($rootPath . DIRECTORY_SEPARATOR . $filename, $responseBody); // TODO handle and report error
 				}
 			}
+		} else {
+			echo $responseBody;
 		}
 
 		$this->setStatusCode($statusCode);
@@ -100,8 +102,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 		header("Content-Type: $contentType");
 		header('Cache-Control: no-store');
 
-		echo $responseBody;
-		JFactory::getApplication()->close();
+		JFactory::getApplication()->close(); // TODO why was that implemented? // NOTE: prevents display of error messages
 	}
 
 	function setStatusCode($statusCode) {
