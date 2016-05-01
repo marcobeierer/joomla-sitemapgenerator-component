@@ -22,7 +22,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 
 		if (strlen($identifier) > 3) { // prevent security issues with tampered identifiers
 			$this->setStatusCode(400); // bad request
-			JFactory::getApplication()->close();
+			//JFactory::getApplication()->close();
 			return;
 		}
 
@@ -99,10 +99,13 @@ class SitemapGeneratorController extends JControllerLegacy {
 
 		$this->setStatusCode($statusCode);
 
-		header("Content-Type: $contentType");
 		header('Cache-Control: no-store');
 
-		JFactory::getApplication()->close(); // TODO why was that implemented? // NOTE: prevents display of error messages
+		//header("Content-Type: $contentType");
+		JFactory::getDocument()->setMimeEncoding($contentType);
+		JResponse::setHeader('Content-Type', $contentType, true);
+
+		//JFactory::getApplication()->close(); // was necessary for Content-Type header to take effect, otherwise it was overwritten // NOTE: prevents display of error messages
 	}
 
 	function setStatusCode($statusCode) {

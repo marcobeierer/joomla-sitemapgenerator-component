@@ -50,7 +50,7 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 						},
 					}).
 					success(function(data, status, headers, config) {
-						if (headers('Content-Type') == 'application/xml') {
+						if (headers('Content-Type').startsWith('application/xml')) {
 
 							sitemapGeneratorBlob = new Blob([ data ], { type : 'application/xml' });
 							$scope.href = (window.URL || window.webkitURL).createObjectURL(sitemapGeneratorBlob);
@@ -88,10 +88,10 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 						if (status == 401) { // unauthorized
 							$scope.message = "The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.";
 						} else if (status == 500) {
-							if (data == '') {
-								$scope.message = "The generation of your sitemap failed. Please try it again.";
-							} else {
+							if (data != '' && headers('Content-Type').startsWith('application/json')) {
 								$scope.message = "The generation of your sitemap failed with the error:<br/><strong>" + JSON.parse(data) + "</strong>.";
+							} else {
+								$scope.message = "The generation of your sitemap failed. Please try it again.";
 							}
 						} else if (status == 503) {
 							$scope.message = "The backend server is temporarily unavailable. Please try it again later.";
