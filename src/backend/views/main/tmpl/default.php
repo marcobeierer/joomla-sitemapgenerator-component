@@ -97,6 +97,7 @@ defined('_JEXEC') or die('Restricted access');
 										<td>{{ stats.TimedOutResourcesCount }}</td>
 									</tr>
 								</table>
+								<p><i>Want to find out more about the dead and timed out URLs? Have a look at my <a href="https://www.marcobeierer.com/joomla-extensions/link-checker">Link Checker</a> for Joomla.</i></p>
 							</div>
 						</div>
 					</div>
