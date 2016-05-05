@@ -25,6 +25,16 @@
 		</field>
 
 		<field
+			name="ignore_embedded_content"
+			type="list"
+			label="COM_SITEMAPGENERATOR_FIELD_IGNORE_EMBEDDED_CONTENT_LABEL"
+			description="COM_SITEMAPGENERATOR_FIELD_IGNORE_EMBEDDED_CONTENT_DESC"
+			default="0">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field
 			name="ca_fallback"
 			type="list"
 			label="COM_SITEMAPGENERATOR_FIELD_CA_FALLBACK_LABEL"

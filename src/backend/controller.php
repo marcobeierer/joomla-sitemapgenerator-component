@@ -28,7 +28,9 @@ class SitemapGeneratorController extends JControllerLegacy {
 
 		$ch = curl_init();
 
-		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla');
+		$ignoreEmbeddedContent = $params->get('ignore_embedded_content', 0);
+
+		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla&ignore_embedded_content=' . $ignoreEmbeddedContent);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		
@@ -100,8 +102,9 @@ class SitemapGeneratorController extends JControllerLegacy {
 		$this->setStatusCode($statusCode);
 
 		header('Cache-Control: no-store');
-
 		//header("Content-Type: $contentType");
+
+		// necessary if application is not closed, then content-type gets overwritten
 		JFactory::getDocument()->setMimeEncoding($contentType);
 		JResponse::setHeader('Content-Type', $contentType, true);
 
