@@ -29,8 +29,9 @@ class SitemapGeneratorController extends JControllerLegacy {
 		$ch = curl_init();
 
 		$ignoreEmbeddedContent = $params->get('ignore_embedded_content', 0);
+		$maxFetchers = $params->get('max_fetchers', 10);
 
-		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla&ignore_embedded_content=' . $ignoreEmbeddedContent);
+		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla&ignore_embedded_content=' . int($ignoreEmbeddedContent) . '&max_fetchers=' . int($maxFetchers));
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		

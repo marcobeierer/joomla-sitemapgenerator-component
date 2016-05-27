@@ -34,6 +34,16 @@
 			<option value="1">JYES</option>
 		</field>
 
+		<field name="max_fetchers"
+			type="integer"
+			label="COM_SITEMAPGENERATOR_FIELD_MAX_FETCHERS_LABEL"
+			description="COM_SITEMAPGENERATOR_FIELD_MAX_FETCHERS_DESC"
+			first="1"
+			last="10"
+			step="1"
+			default="10"
+		/>
+
 		<field
 			name="ca_fallback"
 			type="list"
