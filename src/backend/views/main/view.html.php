@@ -72,7 +72,13 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$sitemaps = array();
 
 		$sitemap = new stdClass();
-		$sitemap->link = JURI::root();
+
+		if (JFactory::getApplication()->input->getInt('dev', 0) === 1) {
+			$sitemap->link = 'https://www.marcobeierer.com';
+		} else {
+			$sitemap->link = JURI::root();
+		}
+
 		$sitemap->base64URL = $this->base64URL($sitemap->link);
 		$sitemap->identifier = '';
 		$sitemap->filename = 'sitemap.xml';
