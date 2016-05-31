@@ -52,6 +52,10 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		if (count($this->sitemapsData) == 0) {
 			$this->sitemapsData = $this->loadDefaultSitemapData();
 		}
+		
+		$ajaxPlugin = JPluginHelper::getPlugin('ajax', 'sitemapgenerator'); // returns an empty array if not found; and an object if found
+		$module = JModuleHelper::getModule('mod_sitemapgenerator'); // returns an dummy object with id = 0 if not found
+		$this->discontinuedExtensionsInstalled = !is_array($ajaxPlugin) || $module->id != 0;
 
 		$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
 

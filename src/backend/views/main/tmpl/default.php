@@ -11,6 +11,12 @@ defined('_JEXEC') or die('Restricted access');
 		<div class="wrap">
 			<h2>Sitemap Generator</h2>
 
+			<?php if ($this->discontinuedExtensionsInstalled): ?>
+				<div class="alert alert-error">
+					The Sitemap Generator Ajax Plugin and the Sitemap Generator Module are no longer necessary and thus the development has discontinued. Please uninstall them in the Extension Manager.
+				</div>
+			<?php endif; ?>
+
 			<?php if (!$this->curlInstalled): ?>
 				<div class="alert alert-error">
 					cURL is not activated on your webspace. Please activate it in your web hosting control panel. This plugin will not work without cURL activated.
