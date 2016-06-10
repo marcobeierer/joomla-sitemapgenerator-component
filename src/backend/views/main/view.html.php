@@ -5,6 +5,8 @@
  */
 defined('_JEXEC') or die('Restricted access');
 
+require_once(JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'libs' . DIRECTORY_SEPARATOR . 'shared_functions.php');
+
 class SitemapGeneratorViewMain extends JViewLegacy {
 	function display($tmpl = null) {
 		JToolbarHelper::title(JText::_('COM_SITEMAPGENERATOR'));
@@ -26,22 +28,12 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$this->onLocalhost = preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', JURI::root()) === 1; // TODO improve localhost detection
 		
 		$params = JComponentHelper::getParams('com_sitemapgenerator');
-		$sef = JFactory::getConfig()->get('sef', 0);
-
-		$languageFilterEnabled = JPluginHelper::isEnabled('system', 'languagefilter');
-		if ($languageFilterEnabled) {
-			$languageFilterPlugin = JPluginHelper::getPlugin('system', 'languagefilter');
-			$languageFilterParams = new JRegistry($languageFilterPlugin->params);
-			$removeDefaultPrefix = $languageFilterParams->get('remove_default_prefix', 0) == '1';
-		} else {
-			$removeDefaultPrefix = false;
-		}
 
 		$this->hasToken = $params->get('token') != '';
 
 		$this->multilangSupportEnabled = $params->get('multilang_support') == '1';
-		$this->multilangSupportNecessary = $languageFilterEnabled && $sef == '1' && !$removeDefaultPrefix;
-		$this->isSEFMultilangSiteWithoutMultilangSupportEnabled = $this->multilangSupportNecessary && !$this->multilangSupportEnabled;
+		$this->multilangSupportNecessary = isMultilangSupportNecessary();
+		$this->isSEFMultilangSiteWithoutMultilangSupportEnabled = isMultilangSupportNecessary() && !$this->multilangSupportEnabled;
 
 		if ($this->multilangSupportEnabled && $this->multilangSupportNecessary) {
 			$this->sitemapsData = $this->loadSitemapsData();
@@ -96,54 +88,25 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 	}
 
 	function loadSitemapsData() {
-		$languages = JLanguageHelper::getLanguages();
-		$app = JApplication::getInstance('site');
-		$menu = $app->getMenu();
-		$config = JFactory::getConfig();
+		return loadMultilangData(function ($language, $langCode, $defaultLangCode, $sefRewrite) {
+			$sitemap = new stdClass();
 
-		$sef = $config->get('sef', 0);
-		$sefRewrite = $config->get('sef_rewrite', 0);
-
-		$defaultLangCode = JFactory::getLanguage()->getDefault();
-
-		$sitemaps = array();
-		//$sitemaps['*'] = $menu->getDefault('*'); // TODO add?
-
-		$languageFilterEnabled = JPluginHelper::isEnabled('system', 'languagefilter');
-		if (!$languageFilterEnabled || $sef != '1') { // TODO check also if sef is enabled
-			return $sitemaps;
-		}
-
-		$oldLanguageFilterValue = $app->setLanguageFilter(true); // necessary that $menu->getDefault() works
-
-		foreach ($languages as $language) {
-			$langCode = $language->lang_code;
-			$default = $menu->getDefault($langCode);
-
-			if ($default && $default->language == $langCode) {
-				$sitemap = new stdClass();
-
-				$sitemap->link = JURI::root() . 'index.php/' . $language->sef . '/';
-				if ($sefRewrite) {
-					$sitemap->link = JURI::root() . $language->sef . '/';
-				}
-
-				$sitemap->base64URL = $this->base64URL($sitemap->link);
-
-				$sitemap->identifier = '';
-				$sitemap->filename = 'sitemap.xml';
-
-				if ($langCode != $defaultLangCode) {
-					$sitemap->identifier = substr($language->sef, 0, 3);
-					$sitemap->filename = 'sitemap.' . $language->sef . '.xml';
-				}
-
-				$sitemaps[$langCode] = $sitemap;
+			$sitemap->link = JURI::root() . 'index.php/' . $language->sef . '/';
+			if ($sefRewrite) {
+				$sitemap->link = JURI::root() . $language->sef . '/';
 			}
-		}
 
-		$app->setLanguageFilter($oldLanguageFilterValue);
+			$sitemap->base64URL = $this->base64URL($sitemap->link);
 
-		return $sitemaps;
+			$sitemap->identifier = '';
+			$sitemap->filename = 'sitemap.xml';
+
+			if ($langCode != $defaultLangCode) {
+				$sitemap->identifier = substr($language->sef, 0, 3);
+				$sitemap->filename = 'sitemap.' . $language->sef . '.xml';
+			}
+
+			return $sitemap;
+		});
 	}
 }
