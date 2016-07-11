@@ -93,7 +93,12 @@ class SitemapGeneratorController extends JControllerLegacy {
 					if ($identifier != '') {
 						$filename = 'sitemap.' . $identifier . '.xml';
 					}
-					file_put_contents($rootPath . DIRECTORY_SEPARATOR . $filename, $responseBody); // TODO handle and report error
+
+					$success = file_put_contents($rootPath . DIRECTORY_SEPARATOR . $filename, $responseBody); // TODO handle and report error
+					if ($success === false) {
+						$statusCode = 500;
+						header('X-Write-Error: 1');
+					}
 				}
 			}
 		} else {
