@@ -34,6 +34,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla&ignore_embedded_content=' . (int) $ignoreEmbeddedContent . '&max_fetchers=' . (int) $maxFetchers);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		
 		if ($params->get('ca_fallback', 0) === '1') {
 			curl_setopt($ch, CURLOPT_CAINFO, JPATH_ROOT . '/media/com_sitemapgenerator/ca-bundle.crt');
