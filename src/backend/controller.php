@@ -28,17 +28,23 @@ class SitemapGeneratorController extends JControllerLegacy {
 
 		$ch = curl_init();
 
-		$ignoreEmbeddedContent = $params->get('ignore_embedded_content', 0);
-		$maxFetchers = $params->get('max_fetchers', 10);
+		$maxFetchers = (int) $params->get('max_fetchers', 10);
+		$ignoreEmbeddedContent = (int) $params->get('ignore_embedded_content', 0);
+		$referenceCountThreshold = (int) $params->get('reference_count_threshold', -1);
+		$queryParamsToRremove = urlencode($params->get('query_params_to_remove', ''));
+		$disableCookies = (int) $params->get('disable_cookies', 0);
 
-		curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/sitemap/v2/' . $base64URL . '?pdfs=1&origin_system=joomla&ignore_embedded_content=' . (int) $ignoreEmbeddedContent . '&max_fetchers=' . (int) $maxFetchers);
+		$requestURL = sprintf('https://api.marcobeierer.com/sitemap/v2/%s?pdfs=1&origin_system=joomla&max_fetchers=%d&ignore_embedded_content=%d&reference_count_threshold=%d&query_params_to_remove=%s&disable_cookies=%d', 
+			$base64URL, $maxFetchers, $ignoreEmbeddedContent, $referenceCountThreshold, $queryParamsToRremove, $disableCookies);
+
+		curl_setopt($ch, CURLOPT_URL, $requestURL);
 		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		
-		if ($params->get('ca_fallback', 0) === '1') {
-			curl_setopt($ch, CURLOPT_CAINFO, JPATH_ROOT . '/media/com_sitemapgenerator/ca-bundle.crt');
-		}
+		// if ($params->get('ca_fallback', 0) === '1') {
+			// curl_setopt($ch, CURLOPT_CAINFO, JPATH_ROOT . '/media/com_sitemapgenerator/ca-bundle.crt');
+		// }
 
 		$token = $params->get('token');
 		if ($token != '') {
