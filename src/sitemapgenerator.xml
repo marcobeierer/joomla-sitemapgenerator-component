@@ -29,5 +29,6 @@
 
 	<media folder="media" destination="com_sitemapgenerator">
 		<folder>js</folder>
+		<folder>css</folder>
 	</media>
 </extension>

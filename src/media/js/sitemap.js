@@ -39,7 +39,7 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 				var poller = function() {
 					var proxyURL = sitemapGeneratorVars.proxyURL;
 					if (sitemapGeneratorVars.systemName == 'Joomla') {
-						proxyURL += '&base64url=' + base64URL + '&identifier=' + identifier;
+						proxyURL += '&baseurl64=' + base64URL + '&identifier=' + identifier;
 					}
 
 					$http({

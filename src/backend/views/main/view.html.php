@@ -16,9 +16,13 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		}
 
 		$doc = JFactory::getDocument();
-		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/angular.min.js', 'text/javascript', true);
-		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap-vars.js?v=1', 'text/javascript', true);
-		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap.js?v=5', 'text/javascript', true);
+		//$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/angular.min.js', 'text/javascript', true);
+		//$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap-vars.js?v=1', 'text/javascript', true);
+		//$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap.js?v=5', 'text/javascript', true);
+		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap-generator-latest.js?v=1', 'text/javascript', true);
+		$doc->addScriptDeclaration("jQuery(document).ready(function() { riot.mount('*', {}); });");
+
+		$doc->addStyleSheet(JURI::root() . '/media/com_sitemapgenerator/css/wrapped.min.css?v=1'); // TODO use real version and make sure version is updated when needed
 
 		$this->curlInstalled = function_exists('curl_version');
 
@@ -29,7 +33,14 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		
 		$params = JComponentHelper::getParams('com_sitemapgenerator');
 
-		$this->hasToken = $params->get('token') != '';
+		$this->token = $params->get('token');
+		$this->hasToken = $this->token != '';
+
+		$this->maxFetchers = (int) $params->get('max_fetchers', 10);
+		$this->ignoreEmbeddedContent = (int) $params->get('ignore_embedded_content', 0);
+		$this->referenceCountThreshold = (int) $params->get('reference_count_threshold', -1);
+		$this->queryParamsToRemove = $params->get('query_params_to_remove', ''); // TODO removed urlencode() because done in JS, does this work?
+		$this->disableCookies = (int) $params->get('disable_cookies', 0);
 
 		$this->multilangSupportEnabled = $params->get('multilang_support') == '1';
 		$this->multilangSupportNecessary = isMultilangSupportNecessary();
@@ -49,11 +60,17 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$module = JModuleHelper::getModule('mod_sitemapgenerator'); // returns an dummy object with id = 0 if not found
 		$this->discontinuedExtensionsInstalled = !is_array($ajaxPlugin) || $module->id != 0;
 
-		$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
+		//$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
+		
+		$this->useLocalAPIServer = ''; 
+		if (JFactory::getApplication()->input->getInt('local', 0) === 1) {
+			$this->useLocalAPIServer = '1';
+		}
 
 		parent::display();
 	}
 
+	/*
 	function getAngularBootstrapJS($sitemapsData) {
 		$script = "jQuery(document).ready(function() {\n";
 		foreach ($sitemapsData as $data) {
@@ -63,6 +80,7 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 
 		return $script;
 	}
+	 */
 
 	function loadDefaultSitemapData() {
 		$sitemaps = array();
@@ -75,7 +93,7 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 			$sitemap->link = JURI::root();
 		}
 
-		$sitemap->base64URL = $this->base64URL($sitemap->link);
+		//$sitemap->base64URL = $this->base64URL($sitemap->link);
 		$sitemap->identifier = '';
 		$sitemap->filename = 'sitemap.xml';
 
@@ -83,9 +101,11 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		return $sitemaps;
 	}
 
+	/*
 	function base64URL($url) {
 		return urlencode(strtr(base64_encode($url), '+/', '-_')); // urlencode for =
 	}
+	 */
 
 	function loadSitemapsData() {
 		return loadMultilangData(function ($language, $langCode, $defaultLangCode, $sefRewrite) {
@@ -96,7 +116,7 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 				$sitemap->link = JURI::root() . $language->sef . '/';
 			}
 
-			$sitemap->base64URL = $this->base64URL($sitemap->link);
+			//$sitemap->base64URL = $this->base64URL($sitemap->link);
 
 			$sitemap->identifier = '';
 			$sitemap->filename = 'sitemap.xml';
