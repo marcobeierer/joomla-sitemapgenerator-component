@@ -6,7 +6,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 if (!JFactory::getUser()->authorise('core.manage', 'com_sitemapgenerator')) {
-	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+	throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
 require_once(JPATH_COMPONENT . '/controller.php');
