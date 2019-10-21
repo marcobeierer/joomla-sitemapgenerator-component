@@ -63,7 +63,7 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		//$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
 		
 		// TODO doesn't work because it isn't passed to controller
-		// was `dev="<? php echo $this->useLocalAPIServer; ? >"` on tag
+		// was |dev="<? php echo $this->useLocalAPIServer; ? >"| on tag
 		//$this->useLocalAPIServer = ''; 
 		//if (JFactory::getApplication()->input->getInt('local', 0) === 1) {
 			//$this->useLocalAPIServer = '1';
