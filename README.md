@@ -8,14 +8,17 @@
 - // message that sitemap was saved and no download is required...
 	- // maybe view link instead of download?
 
+- add tabs for multi lang sites similar to link checker
+	- copy from link checker
+
 - test if query params to remove works with filtering...
 	- is urlencode automatically applied?
 - test multilang support
 
-- use real release, not latest
+- use real release (js file), not latest
+- test fresh installation
 
 ## TODO
-- add tabs for multi lang sites similar to link checker
 - add support for splitted sitemaps
 
 - Remove multilingual support option

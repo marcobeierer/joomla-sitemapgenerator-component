@@ -8,8 +8,6 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 
 <div class="bootstrap3" style="margin-top:10px;">
-	<h2>Sitemap Generator</h2>
-
 	<?php if ($this->discontinuedExtensionsInstalled): ?>
 		<div class="alert alert-error">
 			The Sitemap Generator Ajax Plugin and the Sitemap Generator Module are no longer necessary and thus the development has discontinued. Please uninstall them in the Extension Manager.
@@ -38,38 +36,51 @@ defined('_JEXEC') or die('Restricted access');
 		</div>
 	<?php endif; ?>
 
+	<?php if (count($this->sitemapsData) > 1): ?>
+		<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 20px;">
+			<?php $firstWebsite = true; ?>
+			<?php foreach ($this->sitemapsData as $sitemapData): ?>
+				<li role="presentation" class="<?php if ($firstWebsite) { echo 'active'; } ?>">
+					<a href="#<?php echo md5($sitemapData->link); ?>" aria-controls="<?php echo md5($sitemapData->link); ?>" role="tab" data-toggle="tab"><?php echo $sitemapData->link; ?></a>
+				</li>
+				<?php $firstWebsite = false; ?>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
+
 	<div class="card" id="sitemap-widget">
-		<?php if (count($this->sitemapsData) > 1): ?>
-			<h3>Generate XML sitemaps for your site</h3>
-		<?php else: ?>
-			<h3>Generate a XML sitemap for your site</h3>
-		<?php endif; ?>
-		<hr />
-		<?php foreach($this->sitemapsData as $data): ?>
-			<p>Generate a sitemap for <strong><?php echo $data->link; ?></strong>. The sitemap will be saved with the filename <strong><?php echo $data->filename; ?></strong> in the root folder of your Joomla instance. Any existing file with the same filename will get overwritten.</p>
-			<sitemap-generator
-				proxy-url="index.php?option=com_sitemapgenerator&task=proxy&format=raw"
-				website-url="<?php echo $data->link; ?>"
-				identifier="<?php echo $data->identifier; ?>"
-				sitemap-filename="<?php echo $data->filename; ?>"
-				token="<?php echo $this->token; ?>"
-				system-name="Joomla"
-				max-fetchers="<?php echo $this->maxFetchers; ?>"
-				ignore-embedded-content="<?php echo $this->ignoreEmbeddedContent; ?>"
-				reference-count-threshold="<?php echo $this->referenceCountThreshold; ?>"
-				query-params-to-remove="<?php echo $this->queryParamsToRemove; ?>"
-				disable-cookies="<?php echo $this->disableCookies; ?>"
-				enable-index-file="0"
-				professional-url="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional"
-				btn-primary-class="btn-primary"
-				btn-default-class="btn-default"
-				dev="<?php echo $this->useLocalAPIServer; ?>"
-			>
-			<!-- token needs also to be set in proxy -->
-			</sitemap-generator>
-			<hr />
-		<?php endforeach; ?>
+		<div class="tab-content">
+			<?php $firstWebsite = true; ?>
+			<?php foreach($this->sitemapsData as $data): ?>
+				<div role="tabpanel" class="tab-pane <?php if ($firstWebsite) { echo 'active'; } ?>" id="<?php echo md5($data->link); ?>">
+					<p>Generate a sitemap for <strong><?php echo $data->link; ?></strong>. The sitemap will be saved with the filename <strong><?php echo $data->filename; ?></strong> in the root folder of your Joomla instance. Any existing file with the same filename will get overwritten.</p>
+					<sitemap-generator
+						proxy-url="index.php?option=com_sitemapgenerator&task=proxy&format=raw"
+						website-url="<?php echo $data->link; ?>"
+						identifier="<?php echo $data->identifier; ?>"
+						sitemap-filename="<?php echo $data->filename; ?>"
+						token="<?php echo $this->token; ?>"
+						system-name="Joomla"
+						max-fetchers="<?php echo $this->maxFetchers; ?>"
+						ignore-embedded-content="<?php echo $this->ignoreEmbeddedContent; ?>"
+						reference-count-threshold="<?php echo $this->referenceCountThreshold; ?>"
+						query-params-to-remove="<?php echo $this->queryParamsToRemove; ?>"
+						disable-cookies="<?php echo $this->disableCookies; ?>"
+						enable-index-file="0"
+						professional-url="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional"
+						btn-primary-class="btn-primary"
+						btn-default-class="btn-default"
+						dev="<?php echo $this->useLocalAPIServer; ?>"
+					>
+					<!-- token needs also to be set in proxy -->
+					</sitemap-generator>
+				</div>
+				<?php $firstWebsite = false; ?>
+			<?php endforeach; ?>
+		</div>
 	</div>
+
+	<hr />
 
 	<div class="card">
 		<h4>Sitemap Generator Professional</h4>
