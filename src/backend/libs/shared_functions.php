@@ -1,6 +1,6 @@
 <?php
 /*
- * @copyright  Copyright (C) 2016 Marco Beierer. All rights reserved.
+ * @copyright  Copyright (C) 2016 - 2019 Marco Beierer. All rights reserved.
  * @license    http://www.gnu.org/licenses/agpl-3.0.html GNU/AGPL
  */
 defined('_JEXEC') or die('Restricted access');

@@ -1,6 +1,6 @@
 <?php
 /*
- * @copyright  Copyright (C) 2015 Marco Beierer. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2019 Marco Beierer. All rights reserved.
  * @license    http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
  */
 
