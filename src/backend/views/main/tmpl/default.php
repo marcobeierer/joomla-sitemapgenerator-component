@@ -82,15 +82,25 @@ defined('_JEXEC') or die('Restricted access');
 	<hr />
 
 	<div class="card">
-		<h4>Sitemap Generator Professional</h4>
+		<h3>Sitemap Generator Professional</h3>
 		<p>Your site has <strong>more than 500 URLs</strong> or you like to integrate an <strong>image sitemap</strong> or a <strong>video sitemap</strong>? Then have a look at the <a href="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional">Sitemap Generator Professional</a>.
 	</div>
 	<div class="card">
-		<h4>You like the Sitemap Generator?</h4>
-		<p>I would be happy if you could write a review or vote for it in the <a target="_blank" href="http://extensions.joomla.org/extensions/extension/structure-a-navigation/site-map/sitemap-generator#reviews">Joomla Extensions Directory</a>!</p>
+		<h3>Please help me with a Review for the Sitemap Generator in the JED</h3>
+		<p>Do you like the Sitemap Generator for Joomla and like to help out? I would be happy if you could write a short review or vote for it in the <a target="_blank" href="http://extensions.joomla.org/extensions/extension/structure-a-navigation/site-map/sitemap-generator#reviews">Joomla Extensions Directory</a>. This would help a lot to make the Sitemap Generator more popular and allows me to invest more time in the improvement of the Sitemap Generator.</p>
 	</div>
 	<div class="card">
-		<h4>Any questions?</h4>
+		<h3>Sitemap Generator for other Platforms</h3>
+		<p>The Sitemap Generator is also available as:</p>
+		<ul>
+			<li><a target="_blank" href="https://www.marcobeierer.com/tools/sitemap-generator">online tool</a>, </li>
+			<li><a target="_blank" href="https://www.marcobeierer.com/wordpress-plugins/sitemap-generator">WordPress plugin</a>,</li>
+			<li><a target="_blank" href="https://github.com/marcobeierer/sitemapgenerator-cli">command-line application</a> (direct link to GitHub) and</li>
+			<li>app in the <a target="_blank" href="https://www.marcobeierer.com/tools/website-tools">Website Tools</a>.</li>
+		</ul>
+	</div>
+	<div class="card">
+		<h3>Any questions?</h3>
 		<p>Please have a look at the <a target="_blank" href="https://www.marcobeierer.com/tools/sitemap-generator-faq">FAQ</a> page on my website or ask your question in the <a target="_blank" href="https://groups.google.com/forum/#!forum/marcobeierer">support area on Google Groups</a>. I would be pleased to help you out!</p>
 	</div>
 </div>
