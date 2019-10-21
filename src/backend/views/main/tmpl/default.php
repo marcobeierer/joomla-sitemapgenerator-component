@@ -70,7 +70,6 @@ defined('_JEXEC') or die('Restricted access');
 						professional-url="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional"
 						btn-primary-class="btn-primary"
 						btn-default-class="btn-default"
-						dev="<?php echo $this->useLocalAPIServer; ?>"
 					>
 					<!-- token needs also to be set in proxy -->
 					</sitemap-generator>

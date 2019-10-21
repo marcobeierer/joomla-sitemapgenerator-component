@@ -7,16 +7,16 @@
 		- // maybe take whole request and attach to query?
 - // message that sitemap was saved and no download is required...
 	- // maybe view link instead of download?
+- // add tabs for multi lang sites similar to link checker
+	- // copy from link checker
+- // test multilang support
 
-- add tabs for multi lang sites similar to link checker
-	- copy from link checker
+- // test if query params to remove works with filtering...
 
-- test if query params to remove works with filtering...
-	- is urlencode automatically applied?
-- test multilang support
+- // use real release (js file), not latest
 
-- use real release (js file), not latest
 - test fresh installation
+	- JED checker
 
 ## TODO
 - add support for splitted sitemaps

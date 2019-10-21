@@ -15,11 +15,11 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 			JToolbarHelper::preferences('com_sitemapgenerator');
 		}
 
+		JHtml::_('jquery.framework');
+
 		$doc = JFactory::getDocument();
-		//$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/angular.min.js', 'text/javascript', true);
-		//$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap-vars.js?v=1', 'text/javascript', true);
-		//$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap.js?v=5', 'text/javascript', true);
-		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap-generator-latest.js?v=1', 'text/javascript', true);
+
+		$doc->addScript(JURI::root() . '/media/com_sitemapgenerator/js/sitemap-generator-1.1.1.min.js', 'text/javascript', true);
 		$doc->addScriptDeclaration("jQuery(document).ready(function() { riot.mount('*', {}); });");
 
 		$doc->addStyleSheet(JURI::root() . '/media/com_sitemapgenerator/css/wrapped.min.css?v=1'); // TODO use real version and make sure version is updated when needed
@@ -36,10 +36,10 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 		$this->token = $params->get('token');
 		$this->hasToken = $this->token != '';
 
-		$this->maxFetchers = (int) $params->get('max_fetchers', 10);
+		$this->maxFetchers = (int) $params->get('max_fetchers', 3);
 		$this->ignoreEmbeddedContent = (int) $params->get('ignore_embedded_content', 0);
-		$this->referenceCountThreshold = (int) $params->get('reference_count_threshold', -1);
-		$this->queryParamsToRemove = $params->get('query_params_to_remove', ''); // TODO removed urlencode() because done in JS, does this work?
+		$this->referenceCountThreshold = (int) $params->get('reference_count_threshold', 5);
+		$this->queryParamsToRemove = $params->get('query_params_to_remove', '');
 		$this->disableCookies = (int) $params->get('disable_cookies', 0);
 
 		$this->multilangSupportEnabled = $params->get('multilang_support') == '1';
@@ -62,10 +62,12 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 
 		//$doc->addScriptDeclaration($this->getAngularBootstrapJS($this->sitemapsData));
 		
-		$this->useLocalAPIServer = ''; 
-		if (JFactory::getApplication()->input->getInt('local', 0) === 1) {
-			$this->useLocalAPIServer = '1';
-		}
+		// TODO doesn't work because it isn't passed to controller
+		// was `dev="<? php echo $this->useLocalAPIServer; ? >"` on tag
+		//$this->useLocalAPIServer = ''; 
+		//if (JFactory::getApplication()->input->getInt('local', 0) === 1) {
+			//$this->useLocalAPIServer = '1';
+		//}
 
 		parent::display();
 	}
@@ -108,6 +110,20 @@ class SitemapGeneratorViewMain extends JViewLegacy {
 	 */
 
 	function loadSitemapsData() {
+		if (JFactory::getApplication()->input->getInt('dev', 0) === 1) {
+			$sitemap1 = new stdClass();
+			$sitemap1->link = 'https://www.marcobeierer.com/';
+			$sitemap1->identifier = '';
+			$sitemap1->filename = 'sitemap.xml';
+
+			$sitemap2 = new stdClass();
+			$sitemap2->link = 'https://www.marcobeierer.ch/';
+			$sitemap2->identifier = 'ch';
+			$sitemap2->filename = 'sitemap.ch.xml';
+
+			return array($sitemap1, $sitemap2);
+		}
+
 		return loadMultilangData(function ($language, $langCode, $defaultLangCode, $sefRewrite) {
 			$sitemap = new stdClass();
 
