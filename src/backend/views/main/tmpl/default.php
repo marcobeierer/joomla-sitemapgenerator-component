@@ -8,6 +8,13 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 
 <div class="bootstrap3" style="margin-top:10px;">
+	<?php if ($this->token == ''): ?>
+		<div class="alert alert-error">
+			<p>The Sitemap Generator needs a paid token to operate since August 2022. For more information have a look at the <a href="https://www.marcobeierer.com/joomla-extensions/sitemap-generator-professional">information page</a>.</p>
+			<p>Canceling the free version was sadly necessary because the ratio between free and paying users wasn't healthy for a long time and all income from paying users was used to pay the servers required for the free users. The web version on my <a href="https://www.marcobeierer.com/tools/sitemap-generator">website</a> is still free to use. Thank you for your trust and sorry for the inconvenience caused.</p>
+		</div>
+	<?php endif; ?>
+
 	<?php if ($this->discontinuedExtensionsInstalled): ?>
 		<div class="alert alert-error">
 			The Sitemap Generator Ajax Plugin and the Sitemap Generator Module are no longer necessary and thus the development has discontinued. Please uninstall them in the Extension Manager.
@@ -87,7 +94,8 @@ defined('_JEXEC') or die('Restricted access');
 	</div>
 	<div class="card">
 		<h3>Please help me with a Review for the Sitemap Generator in the JED</h3>
-		<p>Do you like the Sitemap Generator for Joomla and like to help out? I would be happy if you could write a short review or vote for it in the <a target="_blank" href="http://extensions.joomla.org/extensions/extension/structure-a-navigation/site-map/sitemap-generator#reviews">Joomla Extensions Directory</a>. This would help a lot to make the Sitemap Generator more popular and allows me to invest more time in the improvement of the Sitemap Generator.</p>
+		<p>Do you like the Sitemap Generator for Joomla and like to help out? I would be happy if you could write a short review or vote for it in the <a target="_blank" href="http://extensions.joomla.org/extensions/extension/structure-a-navigation/site-map/sitemap-generator#reviews">Joomla Extensions Directory</a>.</p>
+		<p>This would help a lot to make the Sitemap Generator more popular and allows me to invest more time in the improvement of the Sitemap Generator.</p>
 	</div>
 	<div class="card">
 		<h3>Sitemap Generator for other Platforms</h3>

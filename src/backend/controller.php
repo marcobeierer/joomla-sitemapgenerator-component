@@ -32,7 +32,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 		// '&' is required because null is handled as empty string, also some systems seem to have an invalid default value (&amp;)
 		// according to comments in docs: https://www.php.net/manual/en/function.http-build-query.php
 		// RFC3986 is the same as urlencode() uses and it required for query_params_to_remove
-		$queryParamms = http_build_query($queryParamsArr, null, '&', PHP_QUERY_RFC3986); 
+		$queryParams = http_build_query($queryParamsArr, null, '&', PHP_QUERY_RFC3986); 
 
 		if (strlen($identifier) > 3) { // prevent security issues with tampered identifiers
 			$this->setStatusCode(400); // bad request
@@ -53,7 +53,7 @@ class SitemapGeneratorController extends JControllerLegacy {
 			$base64URL, $maxFetchers, $ignoreEmbeddedContent, $referenceCountThreshold, $queryParamsToRemove, $disableCookies);
 		 */
 
-		$requestURL = sprintf('https://api.marcobeierer.com/sitemap/v2/%s?%s', $baseURL64, $queryParamms);
+		$requestURL = sprintf('https://api.marcobeierer.com/sitemap/v2/%s?%s', $baseURL64, $queryParams);
 
 		curl_setopt($ch, CURLOPT_URL, $requestURL);
 		curl_setopt($ch, CURLOPT_HEADER, true);
