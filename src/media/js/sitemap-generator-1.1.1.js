@@ -3185,6 +3185,29 @@ riot.tag2('sitemap-generator', '<div> <form name="sitemapForm"> <div class="btn-
 		self.setMessage = function(text, type, name) {
 			self.events.trigger('set-message', text, type, name);
 		};
+		self.getResponseHeader = function(xhr, name) {
+			return xhr.getResponseHeader(name) || '';
+		};
+		self.hasResponseContentType = function(xhr, contentType) {
+			return self.getResponseHeader(xhr, 'Content-Type').startsWith(contentType);
+		};
+		self.getErrorResponseMessage = function(xhr) {
+			var message = xhr.responseJSON;
+
+			if ([undefined, null, ''].includes(message)) {
+				message = xhr.responseText;
+			}
+
+			if ([undefined, null, ''].includes(message)) {
+				return '';
+			}
+
+			if (typeof message != 'string') {
+				message = JSON.stringify(message);
+			}
+
+			return message.trim();
+		};
 
 		self.on('before-mount', function() {
 			self.generateClass = self.btnPrimaryClass();
@@ -3316,7 +3339,7 @@ riot.tag2('sitemap-generator', '<div> <form name="sitemapForm"> <div class="btn-
 				done(function(data, statusText, xhr) {
 					self.retries = 0;
 
-					if (xhr.getResponseHeader('Content-Type').startsWith('application/xml') || xhr.getResponseHeader('Content-Type').startsWith('text/xml')) {
+					if (self.hasResponseContentType(xhr, 'application/xml') || self.hasResponseContentType(xhr, 'text/xml')) {
 						self.sitemapGeneratorBlob = new Blob([ xhr.responseText ], { type : 'application/xml' });
 						self.href = (window.URL || window.webkitURL).createObjectURL(self.sitemapGeneratorBlob);
 
@@ -3328,7 +3351,7 @@ riot.tag2('sitemap-generator', '<div> <form name="sitemapForm"> <div class="btn-
 						}
 
 						if (self.stats && self.stats.URLLimitReached) {
-							self.setMessage('The Sitemap Generator reached the URL limit and the generated sitemap probably isn\'t complete. You may buy a token for the <a href="' + opts.professionalUrl + '">Sitemap Generator Professional</a> to crawl up to 50\'000 URLs and create a complete sitemap. Additionally to a higher URL limit, the professional version also adds images and videos to your sitemap.', 'danger');
+							self.setMessage('The Sitemap Generator reached the URL limit and the generated sitemap probably isn\'t complete. You may buy a token for <a href="' + opts.professionalUrl + '">Sitemap Generator Pro</a> to crawl up to 50\'000 URLs and create a complete sitemap. Additionally to a higher URL limit, the Pro version also adds images and videos to your sitemap.', 'danger');
 						}
 						else {
 							var message = 'Your sitemap was generated successfully. You can download the sitemap now.';
@@ -3342,6 +3365,14 @@ riot.tag2('sitemap-generator', '<div> <form name="sitemapForm"> <div class="btn-
 						self.downloadClass = self.btnPrimaryClass();
 					}
 					else {
+						if (!data || data.page_count == undefined) {
+							self.events.trigger('stopped');
+							self.setMessage('The generation of your sitemap failed. Please try it again or contact the developer of the extensions.', 'danger');
+							self.update();
+
+							return;
+						}
+
 						self.pageCount = data.page_count;
 
 						if (self.pageCount > 0) {
@@ -3361,32 +3392,7 @@ riot.tag2('sitemap-generator', '<div> <form name="sitemapForm"> <div class="btn-
 				fail(function(xhr, t, x) {
 					var status = xhr.status;
 
-					self.events.trigger('stopped');
-
-					if (status == 401) {
-						self.setMessage('The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.', 'danger');
-					}
-					else if (status == 500) {
-						if (xhr.getResponseHeader('X-Write-Error') == 1) {
-							self.setMessage('Could not write sitemap to file. The reason for that could be a permission issue or that not enough space is available.', 'danger');
-						} else if (![undefined, null, ''].includes(xhr.responseJSON) && xhr.getResponseHeader('Content-Type').startsWith('application/json')) {
-							self.setMessage('The generation of your sitemap failed with the error:<br/><strong>' + xhr.responseJSON + '</strong>.', 'danger');
-						} else {
-							self.setMessage('The generation of your sitemap failed. Please try it again.', 'danger');
-						}
-					}
-					else if (status == 503) {
-						self.setMessage('The backend server is temporarily unavailable. Please try it again later.');
-					}
-					else if (status == 504 && xhr.getResponseHeader('X-CURL-Error') == 1) {
-						var message = xhr.responseJSON;
-						if (message == '') {
-							self.setMessage('A cURL error occurred. Please contact the developer of the extensions.', 'danger');
-						} else {
-							self.setMessage('A cURL error occurred with the error message:<br/><strong>' + message + '</strong>.', 'danger');
-						}
-					}
-					else if (status == 0 && self.retries < 3) {
+					if (status == 0 && self.retries < 3) {
 						self.retries++;
 
 						if (self.forceStop) {
@@ -3398,7 +3404,41 @@ riot.tag2('sitemap-generator', '<div> <form name="sitemapForm"> <div class="btn-
 						self.update();
 						return;
 					}
-					else {
+
+					self.events.trigger('stopped');
+
+					try {
+						var message = 'The generation of your sitemap failed. Please try it again or contact the developer of the extensions.';
+
+						if (status == 401) {
+							message = 'The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.';
+						}
+						else if (status == 500) {
+							if (xhr.getResponseHeader('X-Write-Error') == 1) {
+								message = 'Could not write sitemap to file. The reason for that could be a permission issue or that not enough space is available.';
+							} else if (![undefined, null, ''].includes(xhr.responseJSON) && self.hasResponseContentType(xhr, 'application/json')) {
+								message = 'The generation of your sitemap failed with the error:<br/><strong>' + xhr.responseJSON + '</strong>.';
+							} else {
+								message = 'The generation of your sitemap failed. Please try it again.';
+							}
+						}
+						else if (status == 503) {
+							message = 'The backend server is temporarily unavailable. Please try it again later.';
+						}
+						else if (status == 504) {
+							var responseMessage = self.getErrorResponseMessage(xhr);
+
+							if (xhr.getResponseHeader('X-CURL-Error') == 1 && responseMessage != '') {
+								message = 'A cURL error occurred with the error message:<br/><strong>' + responseMessage + '</strong>.';
+							} else if (xhr.getResponseHeader('X-CURL-Error') == 1) {
+								message = 'A cURL error occurred. Please contact the developer of the extensions.';
+							} else {
+								message = 'The sitemap generation request timed out. Please try it again or contact the developer of the extensions.';
+							}
+						}
+
+						self.setMessage(message, 'danger');
+					} catch (error) {
 						self.setMessage('The generation of your sitemap failed. Please try it again or contact the developer of the extensions.', 'danger');
 					}
 

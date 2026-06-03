@@ -60,7 +60,7 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 
 							if (headers('X-Limit-Reached') == 1) {
 
-								$scope.message = "The Sitemap Generator reached the URL limit and the generated sitemap probably isn't complete. You may buy a token for the <a href=\"" + sitemapGeneratorVars.professionalURL + "\">Sitemap Generator Professional</a> to crawl up to 50'000 URLs and create a complete sitemap. Additionally to a higher URL limit, the professional version also adds images and videos to your sitemap.";
+								$scope.message = "The Sitemap Generator reached the URL limit and the generated sitemap probably isn't complete. You may buy a token for <a href=\"" + sitemapGeneratorVars.professionalURL + "\">Sitemap Generator Pro</a> to crawl up to 50'000 URLs and create a complete sitemap. Additionally to a higher URL limit, the Pro version also adds images and videos to your sitemap.";
 
 								$scope.messageClass = "alert-danger";
 							}
@@ -98,8 +98,14 @@ sitemapGeneratorApp.controller('SitemapController', ['$scope', '$http', '$timeou
 						} else if (status == 503) {
 							$scope.message = "The backend server is temporarily unavailable. Please try it again later.";
 						} else if (status == 504 && headers('X-CURL-Error') == 1) {
-							var message = JSON.parse(data);
-							if (message == '') {
+							var message = '';
+							try {
+								message = JSON.parse(data);
+							} catch (e) {
+								message = data;
+							}
+
+							if ([undefined, null, ''].includes(message)) {
 								$scope.message = "A cURL error occurred. Please contact the developer of the extensions.";
 							} else {
 								$scope.message = "A cURL error occurred with the error message:<br/><strong>" + message + "</strong>.";
